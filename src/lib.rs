@@ -153,7 +153,7 @@ fn fill_utf16_buf<F1, F2, T>(mut f1: F1, f2: F2) -> io::Result<T>
     }
 }
 
-#[cfg(unix)]
+#[cfg(any(unix, target_os="redox"))]
 fn home_dir_() -> Option<PathBuf> {
     ::std::env::home_dir()
 }
@@ -211,7 +211,7 @@ pub fn cargo_home_with_cwd(cwd: &Path) -> io::Result<PathBuf> {
     // Compatibility with old cargo that used the std definition of home_dir
     let compat_home_dir = ::std::env::home_dir();
     let compat_user_home = compat_home_dir.map(|p| p.join(".cargo"));
-    
+
     if let Some(p) = env_cargo_home {
         Ok(p)
     } else {
@@ -220,7 +220,7 @@ pub fn cargo_home_with_cwd(cwd: &Path) -> io::Result<PathBuf> {
                 Ok(d)
             } else {
                 user_home
-            }                
+            }
         } else {
             user_home
         }
